@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Operations</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='operation.css') }}">
+    
+</head>
+<body>
+
+    <!-- 🔙 Nút Back -->
+    <button class="back-button" onclick="history.back()">⬅ Back</button>
+
+    <h1>Operations</h1>
+
+    <div class="container mt-4">
+        <!-- Speed -->
+        <button class="toggle-btn" onclick="$('#speed-section').slideToggle()">Speed 🚀</button>
+        <div id="speed-section" class="form-container">
+            <form class="canForm" data-device="1">
+                <div class="mb-3">
+                    <label class="form-label">ID:</label>
+                    <input type="text" class="form-control can-id" name="can_id" value="0x123" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Data:</label>
+                    <input type="number" class="form-control can-data" name="can_data" placeholder="Ex: 120 Km/h -> 120" min="0" max="300" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+            <div class="alert alert-success result"></div>
+        </div>
+
+        <!-- Battery -->
+        <button class="toggle-btn" onclick="$('#battery-section').slideToggle()">Battery 🔋</button>
+        <div id="battery-section" class="form-container">
+            <form class="canForm" data-device="2">
+                <div class="mb-3">
+                    <label class="form-label">ID:</label>
+                    <input type="text" class="form-control can-id" name="can_id" value="0x124" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Data:</label>
+                    <input type="number" class="form-control can-data" name="can_data" placeholder="Ex: 95% -> 95" min="0" max="100" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+            <div class="alert alert-success result"></div>
+        </div>
+
+        <!-- Temperature -->
+        <button class="toggle-btn" onclick="$('#temperature-section').slideToggle()">Temperature 🌡️</button>
+        <div id="temperature-section" class="form-container">
+            <form class="canForm" data-device="3">
+                <div class="mb-3">
+                    <label class="form-label">ID:</label>
+                    <input type="text" class="form-control can-id" name="can_id" value="0x125" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Data:</label>
+                    <input type="number" class="form-control can-data" name="can_data" placeholder="Ex: 100°C -> 100" min="-50" max="150" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+            <div class="alert alert-success result"></div>
+        </div>
+    </div>
+
+    <script>
+        $(".canForm").on("submit", function(e) {
+            e.preventDefault(); // Ngăn form tải lại trang
+
+            let form = $(this);
+            let formData = form.serialize(); // Lấy dữ liệu từ form
+            let resultDiv = form.find(".result");
+
+            $.post("/send_can", formData, function(res) {
+                resultDiv.html(`✅ Đã gửi thành công! <br> ID: ${res.id}, Data: ${JSON.stringify(res.data)}`)
+                         .removeClass("alert-danger")
+                         .addClass("alert-success")
+                         .fadeIn();
+
+                // Tự động ẩn thông báo sau 3 giây
+                setTimeout(function() {
+                    resultDiv.fadeOut();
+                }, 3000);
+
+            }).fail(function(err) {
+                let errorMsg = err.responseJSON?.error || err.statusText;
+                resultDiv.html(`❌ Lỗi: ${errorMsg}`)
+                         .removeClass("alert-success")
+                         .addClass("alert-danger")
+                         .fadeIn();
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

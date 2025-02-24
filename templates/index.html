@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}USB Device Scanner{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Device</h2>
+    <br>
+    <button id="scanButton" class="btn btn-primary">Scan</button>
+
+    <table class="table mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>No.</th>
+                <th>Port</th>
+                <th>Device Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="usb-list">
+            {% if devices %}
+                {% for device in devices %}
+                <tr>
+                    <td>{{ device.no }}</td>
+                    <td>{{ device.port }}</td>
+                    <td>{{ device.name }}</td>
+                    <td>
+                        <span class="{% if device.status == 'Connected' %}text-success{% else %}text-danger{% endif %}">
+                            {{ device.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="updateDeviceStatus('{{ device.port }}', 'start')">Start</button>
+                        <button class="btn btn-sm btn-danger" onclick="updateDeviceStatus('{{ device.port }}', 'stop')">Stop</button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="updateDeviceName('{{ device.port }}')">🖊</button>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No devices found</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+{% endblock %}
