@@ -3,3 +3,11 @@ Run new Web on Raspberry:
 pip install --upgrade pip --break-system-packages
 pip install flask-socketio --break-system-packages
 
+
+
+
+Run code python:
+1. CML
+pip install python-can --break-system-packages
+
+
