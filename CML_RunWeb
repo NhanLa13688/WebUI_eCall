@@ -1,0 +1,5 @@
+Run new Web on Raspberry:
+1. 
+pip install --upgrade pip --break-system-packages
+pip install flask-socketio --break-system-packages
+
